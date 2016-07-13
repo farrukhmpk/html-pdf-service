@@ -102,4 +102,21 @@ NOTES
 	1. FlyingSaucer is able to pull images and place into PDF, however, the image url must be publicly accessible.
 	
 
+TESTED
+======
 
+Application Servers
+---------------------
+
+This service is tested on the following application servers:
+
+1. Apache Tomcat version 8.0.28
+2. WildFly 10.0.0.Final
+
+Web Browsers
+---------------------
+This service is tested on the following web browsers:
+
+1. FireFox 47.0
+2. Google Chrome Version 51.0.2704.106 m
+3. Internet Explorer 11
