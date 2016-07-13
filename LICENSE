@@ -1,0 +1,69 @@
+HTML to PDF SERVICE LICENSE COMMENTS
+Copyright (C) 2016 Farrukh Mirza 
+
+All source code to this service itself is licensed under the GNU Lesser General
+Public License (LGPL); you can redistribute it and/or modify it under the terms
+of the GNU Lesser General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later version.
+A copy of the LGPL can be found
+on the website of the Free Software Foundation, at 
+http://www.gnu.org/copyleft/lesser.html, and in our distributions under
+LICENSE-LGPL-3.txt.
+
+This service relies on several other free or open source projects in 
+order to build and run. Where binary Java JAR files are included, we include
+only the unmodified binary releases as provided by those other projects. 
+Source code for the respective projects can be found on the project 
+websites, listed below.
+
+Java projects that are used for building and running this service are:
+
+
+Maven (for building)
+https://maven.apache.org/
+License: Apache Software License Version 2.0
+Not packaged with release; development using version 3.1.1
+
+JUnit (for testing)
+http://junit.org
+License: Eclipse Public License Version 1.0
+Using version 4.12
+
+Flying Saucer (PDF generation)
+https://code.google.com/archive/p/flying-saucer/
+License: GNU Lesser General Public License 2.1
+Using version 9.0.9.
+
+Jackson (JSON manipulation)
+https://github.com/FasterXML/jackson
+License: Apache Software License Version 2.0
+Using version 2.6.7.
+
+PDFBox (PDF Merging)
+https://pdfbox.apache.org/
+License: Apache Software License Version 2.0
+Using version 2.0.2.
+
+Spring-Boot (Core application framework)
+http://projects.spring.io/spring-boot/
+License: Apache Software License Version 2.0
+Using version 1.3.6.RELEASE.
+
+Bootstrap (Front end styling framework)
+http://getbootstrap.com/
+License: MIT License
+Using version 3.3.5.
+
+Bootstrap Themes(Front end styling framework)
+http://bootswatch.com/
+License: MIT License
+
+Bootstrap Sexy Radio Button(Front end styling framework)
+http://bootsnipp.com/snippets/featured/sexy-radio-butons
+License: MIT License
+
+JQuery (Front end javascript framework)
+https://jquery.org/
+License: MIT License
+Using version 1.11.3.
+
