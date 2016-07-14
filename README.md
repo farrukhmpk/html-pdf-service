@@ -4,9 +4,17 @@ Location: Dublin, Republic of Ireland
 
 Purpose
 ========
+HTML-PDF-Service is a Java [Spring Boot](http://projects.spring.io/spring-boot/) based microservice.  
+It exposes a RESTful interface to convert well-formed HTML to PDF.  
+The service only expects **HTML BODY contents** to be sent over in the service calls under html parameter (HEAD section will be included by default).  
+The service allows the clients to optionally style the PDF output using CSS 2.1 style sheets.  
+The service also allows the clients to optionally use HTML as a Template with JSON data.    
 
-This service exposes a RESTful interface to create PDF documents from HTML/CSS/JSON.
-This service is based on [Spring-Boot framework](http://projects.spring.io/spring-boot/) and Servlet 3.0 technology.
+Even though there are many other similar projects available, the idea behind this microservice is to allow anyone to deploy it on existing Java based infrastructure within a public or private cloud environment.  
+The service allows the users to quickly build HTML page with custom styling, try it out from the web console and then simply insert variables in the HTML body which will be replaced by JSON object or JSON array provided as a separate argument to the service.   If a JSON array is provided with multiple JSON objects, then individual PDF outputs are merged together into a single PDF file and returned as such (try webconsole at  **{PROTOCOL}://{HOST:PORT}/html-pdf-service/**).  
+In addition, this project also serves as a quick tutorial on building RESTful microservices and applications using Spring Boot in Java.  
+
+This service requires Servlet 3.0 servlet container like Tomcat 8 or Wildfly 9+.  
 This service uses:
 
 	1. [Flying Saucer Pdf library](https://github.com/flyingsaucerproject/flyingsaucer) to convert html and css documents (strings) into PDF.  
@@ -15,7 +23,7 @@ This service uses:
 	4. [Bootstrap](http://getbootstrap.com/) to style web page.   
 	5. [JQuery](https://jquery.com/) to test and control page behaviour.   
 	5. A few other pieces of javascript code were borrowed from different sources and converted into JQuery plugin. The original authors are acknowledged and credited in the respective files.   
-	
+
 
 Licenses
 =========
@@ -42,7 +50,7 @@ Build
 	2. Maven
 	3. Git 
 
-#### Compile and build
+#### Compile, build and deploy
 By Default the service is built for Apache Tomcat server <code>mvn clean install</code>.  
 <code>deploy.bat</code> and <code>run.bat</code> can also be used to deploy the war file to Tomcat and run Tomcat server, assuming {CATALINA_HOME} is setup correctly. Linux versions of these scripts can be created very easily.
 
@@ -50,6 +58,22 @@ By Default the service is built for Apache Tomcat server <code>mvn clean install
 	2. The service can be explicitly built for Apache Tomcat. Build using <code>mvn clean install -Ptomcat</code>.  
 
 The main difference between the two profiles is the location of the log files.
+
+#### Standalone deployment
+
+This microservice can be very easily deployed as a standalone executable jar by enabling embedded Tomcat.  
+This can be achieved by commenting the following from pom.xml (Please refer to Spring Boot documentation on the subject).  
+<code>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+</code> 
+
+This, however, opens up the subject of port management in the production environment.
 
 REST Endpoints
 ===============
