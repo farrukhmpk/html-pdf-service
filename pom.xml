@@ -18,6 +18,20 @@
 
 	<packaging>war</packaging>
 
+	<scm>
+		<connection>scm:git:git://github.com/farrukhmpk/html-pdf-service.git</connection>
+		<developerConnection>scm:git:git@github.com:farrukhmpk/html-pdf-service.git</developerConnection>
+		<url>git://github.com/farrukhmpk/html-pdf-service.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>farrukhmpk</id>
+			<name>Farrukh Mirza</name>
+		</developer>
+	</developers>
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License (LGPL), version 3 or later</name>
@@ -62,13 +76,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
-		<!-- Removing embedded tomcat -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Log4J -->
@@ -150,24 +157,46 @@
 
 	<profiles>
 		<profile>
+			<id>standalone</id>
+			<properties>
+				<log.location>logs</log.location>
+			</properties>
+		</profile>
+		<profile>
 			<id>tomcat</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<log.location>${d}{catalina.home}/logs</log.location>
-				<test.skip>true</test.skip>
 			</properties>
+			<dependencies>
+				<!-- Removing embedded tomcat -->
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
 		</profile>
 		<profile>
 			<id>wildfly</id>
 			<properties>
 				<log.location>${d}{jboss.server.log.dir}</log.location>
-				<test.skip>true</test.skip>
 			</properties>
+			<dependencies>
+				<!-- Removing embedded tomcat -->
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 
 	<properties>
 		<d>$</d>
-		<log.location>${d}{catalina.home}/logs</log.location>
 		<test.skip>true</test.skip>
 
 		<flyingsaucer.version>9.0.9</flyingsaucer.version>

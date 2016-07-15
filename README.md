@@ -11,18 +11,19 @@ The service allows the clients to optionally style the PDF output using CSS 2.1 
 The service also allows the clients to optionally use HTML as a Template with JSON data.    
 
 Even though there are many other similar projects available, the idea behind this microservice is to allow anyone to deploy it on existing Java based infrastructure within a public or private cloud environment.  
-The service allows the users to quickly build HTML page with custom styling, try it out from the web console and then simply insert variables in the HTML body which will be replaced by JSON object or JSON array provided as a separate argument to the service.   If a JSON array is provided with multiple JSON objects, then individual PDF outputs are merged together into a single PDF file and returned as such (try webconsole at  **{PROTOCOL}://{HOST:PORT}/html-pdf-service/**).  
+The service allows the users to quickly build HTML page with custom styling, try it out from the web console and then simply insert variables in the HTML body which will be replaced by JSON object or JSON array provided as a separate argument to the service.   
+If a JSON array is provided with multiple JSON objects, then individual PDF outputs are merged together into a single PDF file and returned as such (try webconsole at  **{PROTOCOL}://{HOST:PORT}/html-pdf-service/**).  
 In addition, this project also serves as a quick tutorial on building RESTful microservices and applications using Spring Boot in Java.  
 
 This service requires Servlet 3.0 servlet container like Tomcat 8 or Wildfly 9+.  
 This service uses:
 
-	1. [Flying Saucer Pdf library](https://github.com/flyingsaucerproject/flyingsaucer) to convert html and css documents (strings) into PDF.  
-	2. [Jackson](https://github.com/FasterXML/jackson) to handle html templating with Json data.
-	3. [Apache PDF Box](https://pdfbox.apache.org/) to merge multiple pdf files into one.
-	4. [Bootstrap](http://getbootstrap.com/) to style web page.   
-	5. [JQuery](https://jquery.com/) to test and control page behaviour.   
-	5. A few other pieces of javascript code were borrowed from different sources and converted into JQuery plugin. The original authors are acknowledged and credited in the respective files.   
+1. [Flying Saucer Pdf library](https://github.com/flyingsaucerproject/flyingsaucer) to convert html and css documents (strings) into PDF.  
+2. [Jackson](https://github.com/FasterXML/jackson) to handle html templating with Json data.
+3. [Apache PDF Box](https://pdfbox.apache.org/) to merge multiple pdf files into one.
+4. [Bootstrap](http://getbootstrap.com/) to style web page.   
+5. [JQuery](https://jquery.com/) to test and control page behaviour.   
+5. A few other pieces of javascript code were borrowed from different sources and converted into JQuery plugin. The original authors are acknowledged and credited in the respective files.   
 
 
 Licenses
@@ -32,14 +33,13 @@ Licenses
 Third party licenses are listed below.
 
 
-	1. FlyingSaucer is provided under LGPL License version 3 which in turn uses iText 2.1.7 under Mozilla Public License Version 1.1.
-	2. spring-boot is provided under APACHE License v2
-	3. apache-commons-lang3 is provided under APACHE License v2
-	4. pdfbox is provided under APACHE License v2
-	5. jackson is provided under APACHE License v2
+1. FlyingSaucer is provided under LGPL License version 3 which in turn uses iText 2.1.7 under Mozilla Public License Version 1.1.
+2. spring-boot is provided under APACHE License v2
+3. apache-commons-lang3 is provided under APACHE License v2
+4. pdfbox is provided under APACHE License v2
+5. jackson is provided under APACHE License v2
 	
 	
-**NOTE:** Due to the nature of **LGPL** license, any modifications made to this service **MUST** be contributed back to the community.
 
 Build
 ======
@@ -54,26 +54,21 @@ Build
 By Default the service is built for Apache Tomcat server <code>mvn clean install</code>.  
 <code>deploy.bat</code> and <code>run.bat</code> can also be used to deploy the war file to Tomcat and run Tomcat server, assuming {CATALINA_HOME} is setup correctly. Linux versions of these scripts can be created very easily.
 
-	1. The service can be explicitly built for WildFly <code>mvn clean install -Pwildfly</code>.  
-	2. The service can be explicitly built for Apache Tomcat. Build using <code>mvn clean install -Ptomcat</code>.  
+1. The service can be explicitly built for WildFly <code>mvn clean install -Pwildfly</code>.  
+2. The service can be explicitly built for Apache Tomcat. Build using <code>mvn clean install -Ptomcat</code>.  
+3. The service can be explicitly built for Embedded Tomcat Container. Build using <code>mvn clean install -Pstandalone</code>.  
 
 The main difference between the two profiles is the location of the log files.
 
 #### Standalone deployment
 
-This microservice can be very easily deployed as a standalone executable jar by enabling embedded Tomcat.  
-This can be achieved by commenting the following from pom.xml (Please refer to Spring Boot documentation on the subject).  
-<code>
+This microservice can be very easily deployed as a standalone executable by enabling embedded Tomcat.  
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
+Simply build the project using standalone profile <code>mvn clean install -Pstandalone</code> and then run the resultant war <code>java -jar target\html-pdf-service.war</code>  
 
-</code> 
+Now you can access the test page by pointing your browser to <code>http://localhost:8080/</code>  
 
-This, however, opens up the subject of port management in the production environment.
+**Note:** This, however, opens up the subject of port management in the production environment.
 
 REST Endpoints
 ===============
@@ -136,6 +131,7 @@ This service is tested on the following application servers:
 
 1. Apache Tomcat version 8.0.28
 2. WildFly 10.0.0.Final
+3. Standalone deployment (Embedded Tomcat)  
 
 Web Browsers
 ---------------------
