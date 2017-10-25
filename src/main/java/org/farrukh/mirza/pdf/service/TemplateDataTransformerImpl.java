@@ -43,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 @Service
-public class TemplateDataTransformerImpl implements TemplateDataTransformer {
+public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDataTransformer {
 	/*
 	 * https://github.com/json-path/JsonPath
 	 */
@@ -51,6 +51,13 @@ public class TemplateDataTransformerImpl implements TemplateDataTransformer {
 
 	@Deprecated
 	private ObjectMapper mapper = new ObjectMapper();
+
+	@Override
+	public String getFormedHTML(String htmlBody, String css) {
+		htmlBody = correctHtml(htmlBody);
+		htmlBody = getFormedHTMLWithCSS(htmlBody, css);
+		return htmlBody;
+	}
 
 	@Override
 	public boolean isJsonArray(String json) {

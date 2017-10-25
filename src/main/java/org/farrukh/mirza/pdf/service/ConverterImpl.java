@@ -41,7 +41,7 @@ import org.springframework.stereotype.Service;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Service
-public class ConverterImpl implements Converter {
+public class ConverterImpl extends BaseImpl implements Converter {
 	private static final Logger logger = LoggerFactory.getLogger(ConverterImpl.class);
 
 	@Override
@@ -55,6 +55,8 @@ public class ConverterImpl implements Converter {
 			html = correctHtml(html);
 			html = getFormedHTMLWithCSS(html, css);
 
+			//This ITextRenderer is from the Flying Saucer library under LGPL license.
+			//Should not be confused with the actual iText library.
 			ITextRenderer r = new ITextRenderer();
 			r.setDocumentFromString(html);
 			r.layout();
@@ -96,27 +98,5 @@ public class ConverterImpl implements Converter {
 		}
 	}
 
-	private String getFormedHTMLWithCSS(String htmlBody, String css) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("<html>");
-		sb.append("<head>");
-		if (StringUtils.isNotBlank(css)) {
-			sb.append("<style type='text/css'>");
-			sb.append(css);
-			sb.append("</style>");
-		}
-		sb.append("</head>");
-		sb.append("<body>");
-		sb.append(htmlBody);
-		sb.append("</body>");
-		sb.append("</html>");
-		return sb.toString();
-	}
-
-	private String correctHtml(String html) {
-		html = html.replaceAll("&nbsp;", "&#160;");
-
-		return html;
-	}
 
 }

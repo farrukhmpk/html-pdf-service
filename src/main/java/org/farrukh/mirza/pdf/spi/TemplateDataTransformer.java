@@ -56,4 +56,6 @@ public interface TemplateDataTransformer {
 	 */
 	public List<String> transformHTMLTemplates(String htmlTemplate, String jsonData);
 	
+	
+	public String getFormedHTML(String htmlBody, String css);
 }
