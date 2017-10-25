@@ -21,9 +21,10 @@ This service uses:
 1. [Flying Saucer Pdf library](https://github.com/flyingsaucerproject/flyingsaucer) to convert html and css documents (strings) into PDF.  
 2. [Jackson](https://github.com/FasterXML/jackson) to handle html templating with Json data.
 3. [Apache PDF Box](https://pdfbox.apache.org/) to merge multiple pdf files into one.
-4. [Bootstrap](http://getbootstrap.com/) to style web page.   
-5. [JQuery](https://jquery.com/) to test and control page behaviour.   
-5. A few other pieces of javascript code were borrowed from different sources and converted into JQuery plugin. The original authors are acknowledged and credited in the respective files.   
+4. [JSON Path](https://github.com/json-path/JsonPath) to traverse JSON data and parse values for templating.
+5. [Bootstrap](http://getbootstrap.com/) to style web page.   
+6. [JQuery](https://jquery.com/) to test and control page behaviour.   
+7. A few other pieces of javascript code were borrowed from different sources and converted into JQuery plugin. The original authors are acknowledged and credited in the respective files.   
 
 
 Licenses
