@@ -5,7 +5,7 @@ Location: Dublin, Republic of Ireland
 Purpose
 ========
 HTML-PDF-Service is a Java [Spring Boot](http://projects.spring.io/spring-boot/) based microservice.  
-It exposes a RESTful interface to convert well-formed HTML to PDF.  
+It exposes a RESTful interface to convert well-formed HTML Template to either PDF or well-formed HTML.  
 The service only expects **HTML BODY contents** to be sent over in the service calls under html parameter (HEAD section will be included by default).  
 The service allows the clients to optionally style the PDF output using CSS 2.1 style sheets.  
 The service also allows the clients to optionally use HTML as a Template with JSON data.    
@@ -86,7 +86,9 @@ There are two types of endpoints.
 
 The service can be access from browser using <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/</code>. The main page serves as a testing area to try out different options.  
 
-The actual service endpoints use HTTP POST and GET protocols with slight variations. They base endpoint is available at <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/convert/html/</code>  
+The actual service endpoints use HTTP POST and GET protocols with slight variations.
+
+The base endpoint for converting HTML Template into PDF is available at <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/convert/html/</code>  
 The service can be invoked in two fashions:    
 - The service can take the parameters in the **request body** by calling <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/convert/html/body</code>. In this case, the request body can contain a json object with html, css, json fields, where css and json fields are optional, e.g., <code> {"html": "< h1 >This is a title</ h1 > < p >This is body</ p >", "css": "h1{color:blue;}"} </code>. This only supports **POST** requests. 
 - The service can take the parameters as **request parameters** by calling <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/convert/html/params</code>. In this case, the request parameters contain html, css, json fields, where css and json fields are optional, e.g., <code> html="< h1 >This is a title</ h1 > < p >This is body</ p >"&css="h1{color:blue;}" </code>.  
@@ -94,6 +96,13 @@ The service can be invoked in two fashions:
 If the service response is desired as a byte stream, the service endpoint can be appended by <code>/byte</code>, e.g.,
 - <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/convert/html/body/byte</code>
 - <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/convert/html/params/byte</code>
+
+The base endpoint for converting a HTML Template into Fully Formed HTML is available at <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/template/html/</code>  
+The service can be invoked in two fashions:    
+- The service can take the parameters in the **request body** by calling <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/template/html/body</code>. In this case, the request body can contain a json object with html, css, json fields, where css and json fields are optional, e.g., <code> {"html": "< h1 >This is a title</ h1 > < p >This is body</ p >", "css": "h1{color:blue;}"} </code>. This only supports **POST** requests. 
+- The service can take the parameters as **request parameters** by calling <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/service/template/html/params</code>. In this case, the request parameters contain html, css, json fields, where css and json fields are optional, e.g., <code> html="< h1 >This is a title</ h1 > < p >This is body</ p >"&css="h1{color:blue;}" </code>.  
+
+This template service always responds with JSON Body which contains a list of formed HTML output.  
 
 #### Management Endpoints
 
@@ -107,9 +116,9 @@ Endpoints
 --------------
 
 Base Application URL: <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/</code> e.g., <code>http://localhost:8080/html-pdf-service</code>  
-Base Service URL: <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/</code> e.g., <code>http://localhost:8080/html-pdf-service/service/convert/html</code>  
+Base Service URL: <code>{PROTOCOL}://{HOST:PORT}/html-pdf-service/</code> e.g., <code>http://localhost:8080/html-pdf-service/service/convert/html</code>  or <code>http://localhost:8080/html-pdf-service/service/template/html</code>
 
-The service endpoints get appended to the base service endpoint url, e.g., <code>http://localhost:8080/html-pdf-service/service/convert/html/params</code>.
+The service endpoints get appended to the base service endpoint url, e.g., <code>http://localhost:8080/html-pdf-service/service/convert/html/params</code> or <code>http://localhost:8080/html-pdf-service/service/template/html/params</code>.
 
 1. <code>/params</code> takes request parameters and responds with the file in the HTTP Servlet Response. 
 2. <code>/params/byte</code> takes request parameters and will return a byte array of the generated PDF file. 
