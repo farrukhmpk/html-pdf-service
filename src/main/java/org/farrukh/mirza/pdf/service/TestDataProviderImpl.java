@@ -34,21 +34,21 @@ public class TestDataProviderImpl implements TestDataProvider {
 	@Override
 	public String getTestDataObject() {
 		String json = getSimpleJsonData();
-//		System.out.println(json);
+		// System.out.println(json);
 		return json;
 	}
 
 	@Override
 	public String getTestDataArray() {
 		String json = getJsonDataArray();
-//		System.out.println(json);
+		// System.out.println(json);
 		return json;
 	}
 
 	@Override
 	public String getHtmlTemplateDoc() {
 		String html = getSimpleThreateningLetter();
-//		System.out.println(html);
+		// System.out.println(html);
 		return html;
 	}
 
@@ -56,14 +56,14 @@ public class TestDataProviderImpl implements TestDataProvider {
 	public String getHtmlDoc() {
 		// String html=getSimpleImageUrl();
 		String html = getSimpleQuotesWithImageUrl();
-//		System.out.println(html);
+		// System.out.println(html);
 		return html;
 	}
 
 	@Override
 	public String getCssDoc() {
 		String css = getSimpleCssManual();
-//		System.out.println(css);
+		// System.out.println(css);
 		return css;
 	}
 
@@ -124,7 +124,7 @@ public class TestDataProviderImpl implements TestDataProvider {
 		sb.append(
 				"<p><img alt=\"\" src=\"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png\" /></p>");
 		sb.append("<p>To,</p>");
-		sb.append("<p><strong>Mr. {fullName}</strong>,</p>");
+		sb.append("<p><strong>Mr. {name.first} {name.last}</strong>,</p>");
 		sb.append("<p>I hope this letter finds you in good health.</p>");
 		sb.append(
 				"<p>This letter wishes to bring your attention towards your non-payment of charges associated with using our services. ");
@@ -156,6 +156,13 @@ public class TestDataProviderImpl implements TestDataProvider {
 	private String getSimpleJsonData() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
+		sb.append("\"name\":{");
+		sb.append("\"first\":\"Richard\"");
+		sb.append(",");
+		sb.append("\"last\":\"Roe\"");
+		sb.append("}");
+
+		sb.append(",");
 		sb.append("\"fullName\":\"Richard Roe\"");
 		sb.append(",");
 		sb.append("\"signature\":\"Johnny English\"");
@@ -166,11 +173,11 @@ public class TestDataProviderImpl implements TestDataProvider {
 	private String getJsonDataArray() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
-		sb.append("{\"fullName\": \"Nina Myers\",\"signature\": \"Jack Bauer\"}");
+		sb.append("{\"name\":{\"first\":\"Nina\",\"last\":\"Myers\"},\"fullName\": \"Nina Myers\",\"signature\": \"Jack Bauer\"}");
 		sb.append(",");
-		sb.append("{\"fullName\": \"John Doe\",\"signature\": \"Jack Bauer\"}");
+		sb.append("{\"name\":{\"first\":\"John\",\"last\":\"Doe\"},\"fullName\": \"John Doe\",\"signature\": \"Jack Bauer\"}");
 		sb.append(",");
-		sb.append("{\"fullName\": \"Richard Roe\",\"signature\": \"Jack Bauer\"}");
+		sb.append("{\"name\":{\"first\":\"Richard\",\"last\":\"Roe\"},\"fullName\": \"Richard Roe\",\"signature\": \"Jack Bauer\"}");
 		sb.append("]");
 		return sb.toString();
 	}

@@ -64,6 +64,16 @@ public class TemplateTransformationTest {
 		return transformer.transformHTMLTemplate(dataProvider.getHtmlTemplateDoc(), dataProvider.getTestDataObject());
 	}
 
+	@Test
+	public void testHtmlUsingTemplate(){
+		System.out.println(getHtmlUsingTemplate());
+	}
+
+	@Test
+	public void testHtmlUsingTemplates(){
+		System.out.println(transformer.transformHTMLTemplates(dataProvider.getHtmlTemplateDoc(), dataProvider.getTestDataArray()));
+	}
+
 //	@Test
 //	public void testHtmlToPdfFile() {
 //		try {
