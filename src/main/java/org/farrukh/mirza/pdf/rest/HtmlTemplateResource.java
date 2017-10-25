@@ -43,7 +43,6 @@ public class HtmlTemplateResource {
 			logger.debug("CSS: " + css);
 			logger.debug("JSON: " + json);
 
-			boolean isMultipleDocs = false;
 			List<String> htmls = new ArrayList<>();
 			List<String> formedHtmls = new ArrayList<>();
 
