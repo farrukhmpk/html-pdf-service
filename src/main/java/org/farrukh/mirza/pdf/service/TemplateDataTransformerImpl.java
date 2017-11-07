@@ -104,8 +104,12 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 			for(int i=0; i < arrayLength; i++){
 				String template = new String(htmlTemplate);
 				for(String k: keys){
-					String val = JsonPath.read(jsonData, "$.["+i+"]."+k);
-					template = template.replaceAll("\\{" + k + "\\}", val);
+					//#1 Value type prevents ClassCastException
+					//#2 k needs to be wrapped in ['k'] in case k has spaces
+					Object val = JsonPath.read(jsonData, "$.["+i+"].['"+k+"']");
+					
+					//Perform toString() on Object val.
+					template = template.replaceAll("\\{" + k + "\\}", val!=null?val.toString():"");
 				}
 				html.add(template);
 			}
