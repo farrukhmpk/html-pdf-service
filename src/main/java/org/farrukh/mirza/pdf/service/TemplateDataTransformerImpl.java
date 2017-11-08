@@ -61,7 +61,8 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 
 	@Override
 	public boolean isJsonArray(String json) {
-		if(StringUtils.isNoneBlank(json) && StringUtils.isNoneBlank(json.trim()) && json.trim().startsWith("[")&& json.trim().endsWith("]")){
+		if (StringUtils.isNoneBlank(json) && StringUtils.isNoneBlank(json.trim()) && json.trim().startsWith("[")
+				&& json.trim().endsWith("]")) {
 			return true;
 		}
 		return false;
@@ -70,8 +71,12 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 	@Override
 	public String transformHTMLTemplate(String htmlTemplate, String jsonObject) {
 		try {
-//			Map<String, Object> data = mapper.readValue(jsonObject, Map.class);
-//			return getHtmlFromTemplateAndData(htmlTemplate, data);
+			// Replace &<space> with &amp;
+			jsonObject = jsonObject.replaceAll("(&\\w*)(?!&.*;) ", "&amp; ");
+
+			// Map<String, Object> data = mapper.readValue(jsonObject,
+			// Map.class);
+			// return getHtmlFromTemplateAndData(htmlTemplate, data);
 			return transformTemplate(htmlTemplate, jsonObject);
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -83,33 +88,55 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 	@Override
 	public List<String> transformHTMLTemplates(String htmlTemplate, String jsonData) {
 		try {
+			// Replace &<space> with &amp;
+			jsonData = jsonData.replaceAll("(&\\w*)(?!&.*;) ", "&amp; ");
+
 			List<String> html = new ArrayList<>();
-			
+
 			////////// OLD Code - Start //////////////
-//			JsonFactory f = new JsonFactory();
-//			JsonParser jp = f.createParser(jsonData);
-//			// advance stream to START_ARRAY first:
-//			jp.nextToken();
-//			// and then each time, advance to opening START_OBJECT
-//			while (jp.nextToken() == JsonToken.START_OBJECT) {
-//				Map<String, Object> data = mapper.readValue(jp, Map.class);
-//				// process
-//				// after binding, stream points to closing END_OBJECT
-//				html.add(getHtmlFromTemplateAndData(htmlTemplate, data));
-//			}
+			// JsonFactory f = new JsonFactory();
+			// JsonParser jp = f.createParser(jsonData);
+			// // advance stream to START_ARRAY first:
+			// jp.nextToken();
+			// // and then each time, advance to opening START_OBJECT
+			// while (jp.nextToken() == JsonToken.START_OBJECT) {
+			// Map<String, Object> data = mapper.readValue(jp, Map.class);
+			// // process
+			// // after binding, stream points to closing END_OBJECT
+			// html.add(getHtmlFromTemplateAndData(htmlTemplate, data));
+			// }
 			////////// OLD Code - End //////////////
-			
+
 			List<String> keys = getUniqueKeysFromTemplate(htmlTemplate);
 			int arrayLength = Integer.parseInt(JsonPath.read(jsonData, "$.length()").toString());
-			for(int i=0; i < arrayLength; i++){
+			for (int i = 0; i < arrayLength; i++) {
 				String template = new String(htmlTemplate);
-				for(String k: keys){
-					//#1 Value type prevents ClassCastException
-					//#2 k needs to be wrapped in ['k'] in case k has spaces
-					Object val = JsonPath.read(jsonData, "$.["+i+"].['"+k+"']");
+				for (String k : keys) {
+
+					try{
+					String val = JsonPath.read(jsonData, "$.[" + i + "]." + k);
+					template = template.replaceAll("\\{" + k + "\\}", val);
 					
-					//Perform toString() on Object val.
-					template = template.replaceAll("\\{" + k + "\\}", val!=null?val.toString():"");
+
+					// The following changes were done by James Cummins in the
+					// hope that spaces will be allowed in the keys.
+					// However, that did not work.
+					// In addition, because k was placed in brackets, so the
+					// service is unable to parse nested objects.
+					// Therefore, these changes are being reverted and some
+					// other solution will be looked into the future.
+
+					// #1 Value type prevents ClassCastException
+					// #2 k needs to be wrapped in ['k'] in case k has spaces
+					// Object val = JsonPath.read(jsonData,
+					// "$.["+i+"].['"+k+"']");
+
+					// Perform toString() on Object val.
+					// template = template.replaceAll("\\{" + k + "\\}",
+					// val!=null?val.toString():"");
+					}catch(Throwable t){
+						logger.warn("Ignoring Exception while reading key value for " + k + ": " + t.getMessage());
+					}
 				}
 				html.add(template);
 			}
@@ -126,20 +153,20 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 	private String getHtmlFromTemplateAndData(String htmlTemplate, Map<String, Object> data) {
 		logger.debug("Json Object contains " + data.entrySet().size() + " properties.");
 		for (Entry<String, Object> e : data.entrySet()) {
-//			logger.debug(e.getKey() + ":" + e.getValue());
+			// logger.debug(e.getKey() + ":" + e.getValue());
 			htmlTemplate = htmlTemplate.replaceAll("\\{" + e.getKey() + "\\}", (String) e.getValue());
-//			logger.debug("HTML Template: " + htmlTemplate);
+			// logger.debug("HTML Template: " + htmlTemplate);
 		}
 
 		logger.debug("Final HTML Template: " + htmlTemplate);
 
 		return htmlTemplate;
 	}
-	
+
 	private String transformTemplate(String template, String json) {
 		logger.info("Template: " + template);
 		logger.info("Json Obj: " + json);
-		
+
 		List<String> keys = getUniqueKeysFromTemplate(template);
 		Map<String, String> keyVals = getValuesFromJson(keys, json);
 		for (Entry<String, String> e : keyVals.entrySet()) {
@@ -149,16 +176,16 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 		logger.info("Template Result: " + template);
 		return template;
 	}
-	
+
 	private Map<String, String> getValuesFromJson(List<String> keys, String json) {
 		Map<String, String> map = new HashMap<>();
 
 		for (String k : keys) {
-			String val = "" ;
-			try{
+			String val = "";
+			try {
 				val = val + JsonPath.read(new String(json), "$." + k);
-			}catch(Throwable t){
-//				val = "N/A";
+			} catch (Throwable t) {
+				// val = "N/A";
 				logger.error("Exception while reading key value for " + k + ": " + t.getMessage());
 			}
 			// if(!StringUtils.isBlank(val)){

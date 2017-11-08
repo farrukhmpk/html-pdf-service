@@ -175,7 +175,7 @@ public class TestDataProviderImpl implements TestDataProvider {
 		sb.append("[");
 		sb.append("{\"name\":{\"first\":\"Nina\",\"last\":\"Myers\"},\"fullName\": \"Nina Myers\",\"signature\": \"Jack Bauer\"}");
 		sb.append(",");
-		sb.append("{\"name\":{\"first\":\"John\",\"last\":\"Doe\"},\"fullName\": \"John Doe\",\"signature\": \"Jack Bauer\"}");
+		sb.append("{\"name\":{\"first\":\"John\",\"last\":\"Doe\"},\"fullName\": \"John Doe\",\"signature\": \"Jack & Jill\"}");
 		sb.append(",");
 		sb.append("{\"name\":{\"first\":\"Richard\",\"last\":\"Roe\"},\"fullName\": \"Richard Roe\",\"signature\": \"Jack Bauer\"}");
 		sb.append("]");
