@@ -113,28 +113,33 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 				String template = new String(htmlTemplate);
 				for (String k : keys) {
 
-					try{
-					String val = JsonPath.read(jsonData, "$.[" + i + "]." + k);
-					template = template.replaceAll("\\{" + k + "\\}", val);
-					
+					try {
+						String val = JsonPath.read(jsonData, "$.[" + i + "]." + k);
+						if (StringUtils.isBlank(val) || "null".equalsIgnoreCase(val)) {
+							val = "";
+						}
 
-					// The following changes were done by James Cummins in the
-					// hope that spaces will be allowed in the keys.
-					// However, that did not work.
-					// In addition, because k was placed in brackets, so the
-					// service is unable to parse nested objects.
-					// Therefore, these changes are being reverted and some
-					// other solution will be looked into the future.
+						template = template.replaceAll("\\{" + k + "\\}", val);
 
-					// #1 Value type prevents ClassCastException
-					// #2 k needs to be wrapped in ['k'] in case k has spaces
-					// Object val = JsonPath.read(jsonData,
-					// "$.["+i+"].['"+k+"']");
+						// The following changes were done by James Cummins in
+						// the
+						// hope that spaces will be allowed in the keys.
+						// However, that did not work.
+						// In addition, because k was placed in brackets, so the
+						// service is unable to parse nested objects.
+						// Therefore, these changes are being reverted and some
+						// other solution will be looked into the future.
 
-					// Perform toString() on Object val.
-					// template = template.replaceAll("\\{" + k + "\\}",
-					// val!=null?val.toString():"");
-					}catch(Throwable t){
+						// #1 Value type prevents ClassCastException
+						// #2 k needs to be wrapped in ['k'] in case k has
+						// spaces
+						// Object val = JsonPath.read(jsonData,
+						// "$.["+i+"].['"+k+"']");
+
+						// Perform toString() on Object val.
+						// template = template.replaceAll("\\{" + k + "\\}",
+						// val!=null?val.toString():"");
+					} catch (Throwable t) {
 						logger.warn("Ignoring Exception while reading key value for " + k + ": " + t.getMessage());
 					}
 				}
@@ -170,6 +175,9 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 		List<String> keys = getUniqueKeysFromTemplate(template);
 		Map<String, String> keyVals = getValuesFromJson(keys, json);
 		for (Entry<String, String> e : keyVals.entrySet()) {
+			if (StringUtils.isBlank(e.getValue()) || "null".equalsIgnoreCase(e.getValue())) {
+				e.setValue("");
+			}
 			template = template.replaceAll("\\{" + e.getKey() + "\\}", e.getValue());
 		}
 
