@@ -58,6 +58,44 @@
 					<skipTests>${test.skip}</skipTests>
 				</configuration>
 			</plugin>
+
+			<!-- 
+				https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-java?view=azure-java-stable
+				https://docs.microsoft.com/en-us/java/azure/spring-framework/deploy-spring-boot-java-app-with-maven-plugin?view=azure-java-stable
+				https://docs.microsoft.com/en-us/java/api/overview/azure/maven/azure-webapp-maven-plugin/readme?view=azure-java-stable#supported-regions
+				https://docs.microsoft.com/en-us/java/api/overview/azure/maven/azure-webapp-maven-plugin/readme?view=azure-java-stable
+				https://docs.microsoft.com/en-us/java/azure/intellij/azure-toolkit-for-intellij-publish-spring-boot-docker-app?view=azure-java-stable
+				
+				az login
+				az account set --subscription &lt;subscription Id&gt; 
+			-->
+
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-webapp-maven-plugin</artifactId>
+				<version>1.1.0</version>
+				<configuration>
+					<resourceGroup>farrukh-html-pdf-test</resourceGroup>
+					<appName>${project.artifactId}-farrukh-test</appName>
+					<linuxRuntime>tomcat 9.0-jre8</linuxRuntime>
+					<!-- <deploymentType>ftp</deploymentType> -->
+					<deploymentType>war</deploymentType>
+					<region>northeurope</region>
+					<path>${project.artifactId}</path>
+					<resources>
+						<resource>
+							<directory>${project.basedir}/target</directory>
+							<targetPath>webapps</targetPath>
+							<includes>
+								<include>*.war</include>
+							</includes>
+							<excludes>
+								<exclude>*.xml</exclude>
+							</excludes>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -115,7 +153,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 
 
 		<dependency>
