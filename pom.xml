@@ -67,7 +67,7 @@
 				https://docs.microsoft.com/en-us/java/azure/intellij/azure-toolkit-for-intellij-publish-spring-boot-docker-app?view=azure-java-stable
 				
 				az login
-				az account set --subscription &lt;subscription Id&gt; 
+				az account set &dash;&dash; subscription &lt;subscription Id&gt; 
 			-->
 
 			<plugin>
