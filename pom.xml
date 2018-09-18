@@ -58,6 +58,17 @@
 					<skipTests>${test.skip}</skipTests>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.3.6</version>
+				<configuration>
+					<repository>${docker.image.prefix}/${project.build.finalName}</repository>
+					<buildArgs>
+						<JAR_FILE>target/${project.build.finalName}.war</JAR_FILE>
+					</buildArgs>
+				</configuration>
+			</plugin>
 
 			<!-- 
 				https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-java?view=azure-java-stable
@@ -242,6 +253,8 @@
 	<properties>
 		<d>$</d>
 		<test.skip>true</test.skip>
+		<log.location>logs</log.location>
+		<docker.image.prefix>farrukhmpk</docker.image.prefix>
 
 		<flyingsaucer.version>9.0.9</flyingsaucer.version>
 		<pdf.box.version>2.0.2</pdf.box.version>
