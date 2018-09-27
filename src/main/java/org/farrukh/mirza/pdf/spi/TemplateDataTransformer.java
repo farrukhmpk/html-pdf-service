@@ -29,6 +29,11 @@ import java.util.List;
 
 public interface TemplateDataTransformer {
 
+	/**
+	 * Checks whether JSON passed in contains a single object or an Array of objects, which will return in multiple PDFs stitched together.
+	 * @param json
+	 * @return boolean
+	 */
 	public boolean isJsonArray(String json);
 	
 	/**

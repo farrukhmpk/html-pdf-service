@@ -21,12 +21,14 @@
 /**
  * @author Farrukh Mirza
  * @date 8 Jul 2016
+ * Repeat view implementation on 27/09/2018
  * Dublin, Ireland
  */
 package org.farrukh.mirza.pdf.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,12 +36,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.farrukh.mirza.pdf.spi.CustomHtmlTagsEnum;
 import org.farrukh.mirza.pdf.spi.TemplateDataTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 @Service
@@ -49,8 +51,8 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 	 */
 	private final Logger logger = LoggerFactory.getLogger(TemplateDataTransformerImpl.class);
 
-	@Deprecated
-	private ObjectMapper mapper = new ObjectMapper();
+//	@Deprecated
+//	private ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	public String getFormedHTML(String htmlBody, String css) {
@@ -74,10 +76,27 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 			// Replace &<space> with &amp;
 			jsonObject = jsonObject.replaceAll("(&\\w*)(?!&.*;) ", "&amp; ");
 
-			// Map<String, Object> data = mapper.readValue(jsonObject,
-			// Map.class);
-			// return getHtmlFromTemplateAndData(htmlTemplate, data);
-			return transformTemplate(htmlTemplate, jsonObject);
+			logger.info("Json Obj: " + jsonObject);
+
+			////// REPEAT TAG CODE - START /////
+			String htmlWithoutRepeatInput = new String(htmlTemplate);
+			String htmlWithoutRepeatOutput = new String(htmlTemplate);
+			//Replace all Repeat tags with repeated html
+			//While loop will stop when all repeat tags are replaced and 
+			while (!(htmlWithoutRepeatOutput = transformRepeatTagInTemplate(new String(htmlWithoutRepeatInput), "$.",
+					jsonObject)).equalsIgnoreCase(htmlWithoutRepeatInput)) {
+				htmlWithoutRepeatInput = new String (htmlWithoutRepeatOutput);
+			}
+			
+			htmlTemplate = htmlWithoutRepeatOutput;
+			////// REPEAT TAG CODE - END /////
+
+			List<String> keys = getUniqueKeysFromTemplate(htmlTemplate);
+			Map<String, String> keyVals = getValuesFromJson(keys, jsonObject);
+
+			return transformTemplate(htmlTemplate, keyVals);
+
+//			return transformTemplate(htmlTemplate, jsonObject);
 		} catch (Throwable e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
@@ -93,56 +112,45 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 
 			List<String> html = new ArrayList<>();
 
-			////////// OLD Code - Start //////////////
-			// JsonFactory f = new JsonFactory();
-			// JsonParser jp = f.createParser(jsonData);
-			// // advance stream to START_ARRAY first:
-			// jp.nextToken();
-			// // and then each time, advance to opening START_OBJECT
-			// while (jp.nextToken() == JsonToken.START_OBJECT) {
-			// Map<String, Object> data = mapper.readValue(jp, Map.class);
-			// // process
-			// // after binding, stream points to closing END_OBJECT
-			// html.add(getHtmlFromTemplateAndData(htmlTemplate, data));
-			// }
-			////////// OLD Code - End //////////////
-
 			List<String> keys = getUniqueKeysFromTemplate(htmlTemplate);
 			int arrayLength = Integer.parseInt(JsonPath.read(jsonData, "$.length()").toString());
 			for (int i = 0; i < arrayLength; i++) {
+				Map<String, String> keyVals = getValuesFromJson(keys, "$.[" + i + "].", jsonData);
 				String template = new String(htmlTemplate);
-				for (String k : keys) {
+				template = transformTemplate(template, keyVals);
 
-					try {
-						String val = JsonPath.read(jsonData, "$.[" + i + "]." + k);
-						if (StringUtils.isBlank(val) || "null".equalsIgnoreCase(val)) {
-							val = "";
-						}
+//				for (String k : keys) {
+//					try {
+//						String val = JsonPath.read(jsonData, "$.[" + i + "]." + k);
+//						if (StringUtils.isBlank(val) || "null".equalsIgnoreCase(val)) {
+//							val = "";
+//						}
+//
+//						template = template.replaceAll("\\{" + k + "\\}", val);
+//
+//						// The following changes were done by James Cummins in
+//						// the
+//						// hope that spaces will be allowed in the keys.
+//						// However, that did not work.
+//						// In addition, because k was placed in brackets, so the
+//						// service is unable to parse nested objects.
+//						// Therefore, these changes are being reverted and some
+//						// other solution will be looked into the future.
+//
+//						// #1 Value type prevents ClassCastException
+//						// #2 k needs to be wrapped in ['k'] in case k has
+//						// spaces
+//						// Object val = JsonPath.read(jsonData,
+//						// "$.["+i+"].['"+k+"']");
+//
+//						// Perform toString() on Object val.
+//						// template = template.replaceAll("\\{" + k + "\\}",
+//						// val!=null?val.toString():"");
+//					} catch (Throwable t) {
+//						logger.warn("Ignoring Exception while reading key value for " + k + ": " + t.getMessage());
+//					}
+//				}
 
-						template = template.replaceAll("\\{" + k + "\\}", val);
-
-						// The following changes were done by James Cummins in
-						// the
-						// hope that spaces will be allowed in the keys.
-						// However, that did not work.
-						// In addition, because k was placed in brackets, so the
-						// service is unable to parse nested objects.
-						// Therefore, these changes are being reverted and some
-						// other solution will be looked into the future.
-
-						// #1 Value type prevents ClassCastException
-						// #2 k needs to be wrapped in ['k'] in case k has
-						// spaces
-						// Object val = JsonPath.read(jsonData,
-						// "$.["+i+"].['"+k+"']");
-
-						// Perform toString() on Object val.
-						// template = template.replaceAll("\\{" + k + "\\}",
-						// val!=null?val.toString():"");
-					} catch (Throwable t) {
-						logger.warn("Ignoring Exception while reading key value for " + k + ": " + t.getMessage());
-					}
-				}
 				html.add(template);
 			}
 
@@ -154,26 +162,8 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 		return new ArrayList<>();
 	}
 
-	@Deprecated
-	private String getHtmlFromTemplateAndData(String htmlTemplate, Map<String, Object> data) {
-		logger.debug("Json Object contains " + data.entrySet().size() + " properties.");
-		for (Entry<String, Object> e : data.entrySet()) {
-			// logger.debug(e.getKey() + ":" + e.getValue());
-			htmlTemplate = htmlTemplate.replaceAll("\\{" + e.getKey() + "\\}", (String) e.getValue());
-			// logger.debug("HTML Template: " + htmlTemplate);
-		}
-
-		logger.debug("Final HTML Template: " + htmlTemplate);
-
-		return htmlTemplate;
-	}
-
-	private String transformTemplate(String template, String json) {
+	private String transformTemplate(String template, Map<String, String> keyVals) {
 		logger.info("Template: " + template);
-		logger.info("Json Obj: " + json);
-
-		List<String> keys = getUniqueKeysFromTemplate(template);
-		Map<String, String> keyVals = getValuesFromJson(keys, json);
 		for (Entry<String, String> e : keyVals.entrySet()) {
 			if (StringUtils.isBlank(e.getValue()) || "null".equalsIgnoreCase(e.getValue())) {
 				e.setValue("");
@@ -185,13 +175,72 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 		return template;
 	}
 
+	private String transformRepeatTagInTemplate(String template, String jsonSelector, String json) {
+		if (CustomHtmlTagsEnum.REPEAT.isPresentAndValid(template)) {
+			final String innerHtml = CustomHtmlTagsEnum.REPEAT.getInnerHtml(template);
+			// Get all unique keys from the innerHTML of the <repeat>...</repeat> tag
+			// The resulting keys in the list would be like below as an example:
+			// 1. parent.child[*].name.first
+			// 2. parent.child[*].name.last
+			// 3. parent.child[*].dob
+			// 4. parent.child[*].address
+			List<String> keys = getUniqueKeysFromTemplate(innerHtml);
+			// Now get the array part(s) separated and unique, e.g., the list from above
+			// example will result in a hash set of a single element, i.e.,
+			// --> parent.child
+			HashSet<String> keyArrayElement = new HashSet<>();
+			for (String k : keys) {
+				keyArrayElement.add(k.substring(0, k.indexOf("[")));
+			}
+			// Next find among all arrays referenced under the repeat tag, which one has the
+			// most elements.
+			// Assumption: If multiple arrays are referenced, then all are assumed to be of
+			// same size within the <repeat> tag
+			// Assumption: Only a single level of <repeat> is considered. Nested <repeat>
+			// tags are not allowed
+			int maxArraySize = 0;
+			for (String k : keyArrayElement) {
+				int arraySize = Integer.parseInt(JsonPath.read(json, jsonSelector + k + ".length()").toString());
+				maxArraySize = arraySize > maxArraySize ? arraySize : maxArraySize;
+			}
+
+			// Now repeat the inner HTML with indexed keys instead of the template key
+			// parent.child[*].name.first will be replaced by parent.child[0].name.first,
+			// then parent.child[1].name.first, ...
+			String indexedInnerHTML = "";
+			for (int i = 0; i < maxArraySize; i++) {
+				String indexedInnerHTMLRow = new String(innerHtml);
+				for (String k : keyArrayElement) {
+					indexedInnerHTMLRow = indexedInnerHTMLRow
+							.replaceAll(k + "[" + JSON_OBJECT_ARRAY_REPEAT_TAG_WILDCARD + "]", k + "[" + i + "]");
+				}
+				indexedInnerHTML += indexedInnerHTMLRow;
+			}
+
+			// Now replace the original template text containing REPEAT tag with the actual
+			// repetition of indexed HTML
+			// Original: <repeat>{parent.child[*].name.first}
+			// {parent.child[*].name.last}</repeat>
+			// Result: {parent.child[0].name.first}
+			// {parent.child[0].name.last}{parent.child[1].name.first}
+			// {parent.child[1].name.last}
+			template = template.replaceFirst(CustomHtmlTagsEnum.REPEAT.getTagWithInnerHtmlSubstring(template),
+					indexedInnerHTML);
+		}
+		return template;
+	}
+
 	private Map<String, String> getValuesFromJson(List<String> keys, String json) {
+		return getValuesFromJson(keys, "$.", json);
+	}
+
+	private Map<String, String> getValuesFromJson(List<String> keys, String jsonSelector, String json) {
 		Map<String, String> map = new HashMap<>();
 
 		for (String k : keys) {
 			String val = "";
 			try {
-				val = val + JsonPath.read(new String(json), "$." + k);
+				val = val + JsonPath.read(new String(json), jsonSelector + k);
 			} catch (Throwable t) {
 				// val = "N/A";
 				logger.error("Exception while reading key value for " + k + ": " + t.getMessage());
@@ -216,5 +265,31 @@ public class TemplateDataTransformerImpl extends BaseImpl implements TemplateDat
 
 		return keys;
 	}
+
+	////// OLD METHODS - START /////////
+	@Deprecated
+	private String getHtmlFromTemplateAndData(String htmlTemplate, Map<String, Object> data) {
+		logger.debug("Json Object contains " + data.entrySet().size() + " properties.");
+		for (Entry<String, Object> e : data.entrySet()) {
+			// logger.debug(e.getKey() + ":" + e.getValue());
+			htmlTemplate = htmlTemplate.replaceAll("\\{" + e.getKey() + "\\}", (String) e.getValue());
+			// logger.debug("HTML Template: " + htmlTemplate);
+		}
+
+		logger.debug("Final HTML Template: " + htmlTemplate);
+
+		return htmlTemplate;
+	}
+
+	@Deprecated
+	private String transformTemplate(String template, String json) {
+		logger.info("Json Obj: " + json);
+
+		List<String> keys = getUniqueKeysFromTemplate(template);
+		Map<String, String> keyVals = getValuesFromJson(keys, json);
+
+		return transformTemplate(template, keyVals);
+	}
+	////// OLD METHODS - END /////////
 
 }
