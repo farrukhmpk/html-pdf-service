@@ -131,6 +131,162 @@ The service endpoints get appended to the base service endpoint url, e.g., <code
 3. <code>/body</code> takes request body as json and responds with the file in the HTTP Servlet Response. 
 4. <code>/body/byte</code> takes request body as json and will return a byte array of the generated PDF file. 
 
+USAGE & EXAMPLES
+======
+
+Printing Single Letter With Simple JSON
+---------------------
+
+#### HTML
+
+<code>
+&lt;h1&gt;HELLO &lt;/h1&gt; 
+&lt;p&gt;{name.first} &lt;/p&gt;
+&lt;p&gt;{name.second} &lt;/p&gt;
+</code>
+
+#### JSON
+
+<code>
+{
+	"name": {
+		"first": "Farrukh",
+		"second": "Mirza"
+	}
+}
+</code>
+
+Printing Multiple Letters With Simple JSON ARRAY
+---------------------
+
+#### HTML
+
+<code>
+&lt;h1&gt;HELLO &lt;/h1&gt; 
+&lt;p&gt;{name.first} &lt;/p&gt;
+&lt;p&gt;{name.second} &lt;/p&gt;
+</code>
+
+#### JSON
+
+<code>
+[
+	{
+		"name": {
+			"first": "Farrukh",
+			"second": "Mirza"
+		}
+	},
+	{
+		"name": {
+			"first": "Jack",
+			"second": "Bauer"
+		}
+	}
+]
+</code>
+
+
+
+Printing Single Letter With JSON Containing Repeated Data
+---------------------
+
+In order to print, e.g., multiple rows in a table, use the **&lt;repeat&gt;** tag. The elements in the array can be referenced using **[*]** notation.
+
+#### HTML
+
+<code>
+&lt;h1&gt;HELLO &lt;/h1&gt;
+&lt;table&gt; 
+&lt;repeat&gt; 
+&lt;tr&gt;
+&lt;td&gt;{names[*].first} &lt;/td&gt;
+&lt;td&gt;{names[*].second} &lt;/td&gt;
+&lt;tr&gt;
+&lt;/repeat&gt; 
+&lt;/table&gt; 
+
+</code>
+
+#### JSON
+
+<code>
+{
+	"names": [
+		{
+		"first": "Farrukh",
+		"second": "Mirza"
+		},
+		{
+		"first": "Jack",
+		"second": "Bauer"
+		}
+	]
+}
+</code>
+
+
+
+
+
+Printing Multiple Letters With JSON ARRAY Containing Repeated Data
+---------------------
+
+In order to print, e.g., multiple rows in a table, use the **&lt;repeat&gt;** tag. The elements in the array can be referenced using **[*]** notation.
+
+In this case multiple PDFs will be generated. Each PDF can be unique in this case, as the repeated data can vary per json object in the array.
+
+#### HTML
+
+<code>
+&lt;h1&gt;HELLO &lt;/h1&gt;
+&lt;table&gt; 
+&lt;repeat&gt; 
+&lt;tr&gt;
+&lt;td&gt;{names[*].first} &lt;/td&gt;
+&lt;td&gt;{names[*].second} &lt;/td&gt;
+&lt;tr&gt;
+&lt;/repeat&gt; 
+&lt;/table&gt; 
+
+</code>
+
+#### JSON
+
+<code>
+[
+	{
+		"names": [
+			{
+			"first": "Farrukh",
+			"second": "Mirza"
+			},
+			{
+			"first": "Jack",
+			"second": "Bauer"
+			}
+		]
+	},
+	{
+		"names": [
+			{
+			"first": "Ethan",
+			"second": "Hunt"
+			},
+			{
+			"first": "Michael",
+			"second": "Corleone"
+			},
+			{
+			"first": "Json",
+			"second": "Bourne"
+			}
+		]
+	}
+]
+</code>
+
+
 
 NOTES
 ======
