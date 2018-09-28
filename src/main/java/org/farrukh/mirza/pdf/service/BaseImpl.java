@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public abstract class BaseImpl {
 
-	protected final String JSON_OBJECT_ARRAY_REPEAT_TAG_WILDCARD = "*";
+	protected final String JSON_OBJECT_ARRAY_REPEAT_TAG_WILDCARD = "\\*";
 
 	protected String getFormedHTMLWithCSS(String htmlBody, String css) {
 		StringBuffer sb = new StringBuffer();

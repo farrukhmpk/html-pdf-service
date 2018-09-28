@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.farrukh.mirza.pdf.spi.Converter;
 import org.farrukh.mirza.pdf.spi.TemplateDataTransformer;
@@ -64,6 +65,11 @@ public class TemplateTransformationTest {
 		return transformer.transformHTMLTemplate(dataProvider.getHtmlTemplateDoc(), dataProvider.getTestDataObject());
 	}
 
+	private List<String> getHtmlsUsingTemplate() {
+		return transformer.transformHTMLTemplates(dataProvider.getHtmlTemplateDoc(), dataProvider.getTestDataArray());
+	}
+
+
 	@Test
 	public void testHtmlUsingTemplate(){
 		System.out.println(getHtmlUsingTemplate());
@@ -96,15 +102,15 @@ public class TemplateTransformationTest {
 //		}
 //	}
 
-	@Test
-	public void testHtmlToPdfFileWithCss() {
-		try {
-			OutputStream file = new FileOutputStream(new File("HTMLtoPDFTestCss.pdf"));
-			converter.convertHtmlToPdf(getSimpleHtml(), dataProvider.getCssDoc(), file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+//	@Test
+//	public void testHtmlToPdfFileWithCss() {
+//		try {
+//			OutputStream file = new FileOutputStream(new File("HTMLtoPDFTestCss.pdf"));
+//			converter.convertHtmlToPdf(getSimpleHtml(), dataProvider.getCssDoc(), file);
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 //	@Test
 //	public void testHtmlToPdfByteFileWithCss() {
@@ -151,7 +157,17 @@ public class TemplateTransformationTest {
 		}
 	}
 
-//	@Test
+	@Test
+	public void testHtmlTemplatesToPdfFileWithCss() {
+		try {
+			OutputStream file = new FileOutputStream(new File("HTMLTemplatestoPDFTestCss.pdf"));
+			converter.convertHtmlToPdf(getHtmlsUsingTemplate(), dataProvider.getCssDoc(), file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//	@Test
 //	public void testHtmlTemplateToPdfByteFileWithCss() {
 //		try {
 //			ByteArrayOutputStream bos = new ByteArrayOutputStream();

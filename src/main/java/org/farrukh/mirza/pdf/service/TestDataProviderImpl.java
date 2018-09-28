@@ -33,21 +33,24 @@ public class TestDataProviderImpl implements TestDataProvider {
 
 	@Override
 	public String getTestDataObject() {
-		String json = getSimpleJsonData();
+//		String json = getSimpleJsonData();
+		String json = getSimpleJsonDataMultipleSignatures();
 		// System.out.println(json);
 		return json;
 	}
 
 	@Override
 	public String getTestDataArray() {
-		String json = getJsonDataArray();
+//		String json = getJsonDataArray();
+		String json = getJsonDataArrayMultipleSignatures();
 		// System.out.println(json);
 		return json;
 	}
 
 	@Override
 	public String getHtmlTemplateDoc() {
-		String html = getSimpleThreateningLetter();
+//		String html = getSimpleThreateningLetter();
+		String html = getSimpleThreateningLetterForArray();
 		// System.out.println(html);
 		return html;
 	}
@@ -138,6 +141,35 @@ public class TestDataProviderImpl implements TestDataProvider {
 		return sb.toString();
 	}
 
+	private String getSimpleThreateningLetterForArray() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(
+				"<p><img alt=\"\" src=\"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png\" /></p>");
+		sb.append("<p>To,</p>");
+		sb.append("<p><strong>Mr. {name.first} {name.last}</strong>,</p>");
+		sb.append("<p>I hope this letter finds you in good health.</p>");
+		sb.append(
+				"<p>This letter wishes to bring your attention towards your non-payment of charges associated with using our services. ");
+		sb.append("Please go to our website to make a payment. ");
+		sb.append("Please be advised that any non-payment can result in serious criminal charges brought forward.</p>");
+		sb.append("<p>Yours Truly,</p>");
+		sb.append("<table>");
+		sb.append("<tr>");
+		sb.append("<repeat>");
+		sb.append("<td>");
+		sb.append("<p><strong>{signatures[*].name}</strong></p>");
+		sb.append("<p><strong>{signatures[*].designation}</strong></p>");
+		sb.append("</td>");
+		sb.append("</repeat>");
+		sb.append("</tr>");
+		sb.append("</table>");
+//		sb.append("<p><strong>{signature}</strong></p>");
+//		sb.append("<p>Customer Relationship Manager</p>");
+		sb.append("<p>The core business Inc.</p>");
+
+		return sb.toString();
+	}
+
 	/*
 	 * Css Test Data
 	 */
@@ -170,14 +202,49 @@ public class TestDataProviderImpl implements TestDataProvider {
 		return sb.toString();
 	}
 
+	private String getSimpleJsonDataMultipleSignatures() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("{");
+		sb.append("\"name\":{");
+		sb.append("\"first\":\"Richard\"");
+		sb.append(",");
+		sb.append("\"last\":\"Roe\"");
+		sb.append("}");
+
+		sb.append(",");
+		sb.append("\"fullName\":\"Richard Roe\"");
+		sb.append(",");
+		sb.append("\"signatures\": [{\"name\":\"Ethan Hunt\", \"designation\":\"Impossible Mission Force\"}, {\"name\":\"Michael Corleone\", \"designation\":\"The Reasoning Department\"}]");
+		sb.append("}");
+		return sb.toString();
+	}
+
 	private String getJsonDataArray() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
-		sb.append("{\"name\":{\"first\":\"Nina\",\"last\":\"Myers\"},\"fullName\": \"Nina Myers\",\"signature\": \"Jack Bauer\"}");
+		sb.append(
+				"{\"name\":{\"first\":\"Nina\",\"last\":\"Myers\"},\"fullName\": \"Nina Myers\",\"signature\": \"Jack Bauer\"}");
 		sb.append(",");
-		sb.append("{\"name\":{\"first\":\"John\",\"last\":\"Doe\"},\"fullName\": \"John Doe\",\"signature\": \"Jack & Jill\"}");
+		sb.append(
+				"{\"name\":{\"first\":\"John\",\"last\":\"Doe\"},\"fullName\": \"John Doe\",\"signature\": \"Jack & Jill\"}");
 		sb.append(",");
-		sb.append("{\"name\":{\"first\":\"Richard\",\"last\":\"Roe\"},\"fullName\": \"Richard Roe\",\"signature\": \"Jack Bauer\"}");
+		sb.append(
+				"{\"name\":{\"first\":\"Richard\",\"last\":\"Roe\"},\"fullName\": \"Richard Roe\",\"signature\": \"Jack Bauer\"}");
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	private String getJsonDataArrayMultipleSignatures() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		sb.append(
+				"{\"name\":{\"first\":\"Nina\",\"last\":\"Myers\"},\"fullName\": \"Nina Myers\",\"signatures\": [{\"name\":\"Jack Bauer\", \"designation\":\"The Boss\"}, {\"name\":\"Jack & Jill\", \"designation\":\"Customer Relationship Manager\"}]}");
+		sb.append(",");
+		sb.append(
+				"{\"name\":{\"first\":\"John\",\"last\":\"Doe\"},\"fullName\": \"John Doe\",\"signatures\": [{\"name\":\"Ethan Hunt\", \"designation\":\"Impossible Mission Force\"}, {\"name\":\"Michael Corleone\", \"designation\":\"The Reasoning Department\"}]}");
+		sb.append(",");
+		sb.append(
+				"{\"name\":{\"first\":\"Richard\",\"last\":\"Roe\"},\"fullName\": \"Richard Roe\",\"signatures\": [{\"name\":\"Fredo Corleone\", \"designation\":\"The Useless Department\"}]}");
 		sb.append("]");
 		return sb.toString();
 	}

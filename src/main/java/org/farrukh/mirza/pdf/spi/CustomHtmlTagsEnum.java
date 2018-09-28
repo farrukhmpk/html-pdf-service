@@ -77,4 +77,11 @@ public enum CustomHtmlTagsEnum {
 	public String getTagWithInnerHtmlSubstring(String html) {
 		return html.substring(html.toLowerCase().indexOf(start), (html.toLowerCase().indexOf(end) + end.length()));
 	}
+	
+	/*
+	 * Replace everything in <param>html</param> between start and end, including the tags, with the replacement String provided
+	 */
+	public String replaceTagWithInnerHtmlByReplacement(String html, String replacement) {
+		return html.substring(0, html.toLowerCase().indexOf(start)) + replacement + html.substring((html.toLowerCase().indexOf(end) + end.length()));
+	}
 }
